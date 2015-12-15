@@ -8,6 +8,7 @@ $limit = 30;
 $db = new database();
 $db->query("SELECT * FROM tbl_ticket
   WHERE tbl_ticket.checked_in = 1
+  ORDER BY tbl_ticket.timestamp DESC
   LIMIT $offset, $limit");
 try {
   $db->execute();
