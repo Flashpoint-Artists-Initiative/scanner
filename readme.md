@@ -7,3 +7,11 @@ This application is designed to be used as a ticket scanning system in environme
 Copy `config-example.php` to `config.php` and change the database settings as needed.
 
 If you want some test data to work with, run `inc/debug.php`. 1000 ticket IDs and names will be generated and inserted into the database. The IDs will range from `1234567890` to `1234568889`.
+
+##TODO
+
+- Optional security features
+- Better design
+- Better debug/testing functions
+- Import ticket database function
+- Sounds
