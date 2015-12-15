@@ -1,6 +1,6 @@
 <?php
-require_once('inc/config.php');
-require_once('inc/tempest.php');
+require_once('config.php');
+require_once('tempest.php');
 
 $db = new database();
 $db->query("INSERT INTO tbl_ticket(id, name)
@@ -18,7 +18,7 @@ while ($i < 1234568890) {
   } else {
     $codename.='';
   }
-  $i++;
+
   $codename.= ucfirst(pick($PGPWordList))." ".ucfirst(pick($nouns));
   $db->bind(1,$i);
   $db->bind(2,$codename);

@@ -9,11 +9,17 @@
     font-family: 'Helvetica', sans-serif;
     text-transform: uppercase;
   }
-  input{
+  #ticket{
     display: block;
     font-size: 400%;
     text-align: center;
     margin: 0 auto;
+  }
+  #username {
+    font-size: 150%;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
   }
   h1 {
     font-size: 400%;
@@ -30,9 +36,10 @@
   }
   </style>
   <body>
-    <h1>Scan</h1>
-    <input name="ticket_id" placeholder="Ready to scan" />
+    <h1>Ready to scan</h1>
+    <input id="username" name="username" placeholder="Who are you" />
+    <input id="ticket" name="ticket_id" placeholder="Ready to scan" />
   </body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="app.js"></script>
+  <script src="assets/js/jQuery.js"></script>
+  <script src="assets/js/app.js"></script>
 </html>
