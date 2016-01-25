@@ -74,7 +74,7 @@ if(!is_admin()) {
   </ul>
 
 <?php } ?>
-
+<div class="table-responsive">
   <table class="table table-condensed table-bordered table-striped">
     <thead>
       <tr>
@@ -98,5 +98,4 @@ if(!is_admin()) {
     </tbody>
   </table>
 </div>
-</body>
-</html>
+<?php require_once('footer.php'); ?>

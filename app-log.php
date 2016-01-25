@@ -71,9 +71,9 @@ if(!is_admin()) {
     <li><a href="?action=viewLogs&page=<?php echo $nextpage;?>">&raquo;</a></li>
     <?php endif;?>
   </ul>
-
 <?php } ?>
 
+<div class="table-responsive">
   <table class="table table-condensed table-bordered">
     <thead>
       <tr>
@@ -106,5 +106,5 @@ if(!is_admin()) {
       <?php endforeach;?>
     </tbody>
   </table>
-</body>
-</html>
+</div>
+<?php require_once('footer.php'); ?>

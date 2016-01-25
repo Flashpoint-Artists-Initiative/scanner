@@ -96,3 +96,4 @@ $duplicates = $db->single()->duplicates;
     </div>
   </div>
 </p>
+<?php require_once('footer.php'); ?>

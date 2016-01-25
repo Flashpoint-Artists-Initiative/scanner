@@ -40,3 +40,5 @@ if (isset($_GET['import'])) {
   <textarea class="form-control" rows="15" name="data"></textarea>
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
+
+<?php require_once('footer.php'); ?>
