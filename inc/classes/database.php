@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class database {
 
@@ -52,7 +52,7 @@ class database {
         case is_null($value):
           $type = \PDO::PARAM_NULL;
           break;
-        default: 
+        default:
           $type = \PDO::PARAM_STR;
       }
     }
@@ -102,6 +102,6 @@ class database {
     $database->query("SELECT COUNT(*) AS num FROM $table");
     $database->execute();
     return $database->single()->num;
-  }  
+  }
 
 }

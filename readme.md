@@ -1,17 +1,45 @@
 #Scanner
-Given a barcode scanner that acts like a keyboard and a database of ticket IDs, check to see if the scanned barcode exists in the database and mark it as scanned if so.
+###Offline barcode scanning made easy
 
-This application is designed to be used as a ticket scanning system in environments where internet or cellular access is not extant.
+##Intent
+This tool is designed to operate in environments where access to the internet is not available or is unreliable. All the required resources (css/javascript/audio) are included locally.
 
-##Installing
-Copy `config-example.php` to `config.php` and change the database settings as needed.
+**THIS IS NOT A SECURE SYSTEM**  
+Where possible, provisions for security have been made, but no guarantees are provided. _Conventional wisdom says that people scanning tickets aren't going to be well-versed in XSS and SQL exploits_.
 
-If you want some test data to work with, run `inc/debug.php`. 1000 ticket IDs and names will be generated and inserted into the database. The IDs will range from `1234567890` to `1234568889`.
+##Requirements
+You will need hardware to act as a server for the scanning interface and client hardware that will connect to that hardware over a local network. For example, I use a Mac Mini running this application on a virtual machine, which is allowed to interface with the local network. The mini is wired into an ethernet switch along with several windows laptops. The laptops load the scanning website from the Mini's virtual machine. The actual setup of this system will be left as an exercise to the end-user.
+
+##Assumptions
+This application makes several assumptions about the nature and structure of the data being scanned. Please see `init.sql` to get an idea.
+
+At the bare minimum, your `ticket` table should have the following columns:  
+
+* `firstname`, ticket holder's first name
+* `barcode`, the column containing ticket barcodes that will be scanned from the physical ticket.
+
+If you have that data in a column separated format (CSV) like so: `firstname,barcode` (with each entry on a new line), you can import it from `import.php`.
+
+These columns are added once the data has been imported:
+
+* `scanned`, a boolean column for whether or not the ticket has been scanned
+* `scanned_at`, a timestamp for when the ticket was scanned
+* `scanned_by`, who scanned the ticket
+* `ip_addr`, used for storing the hashed IP of the hardware that the ticket was scanned from
+
+Note that the `barcode` column is defined as a constant in `inc/constants.php` and can be changed based on the data's format.
+
+Further work will be done to increase the scanner's flexibility.
+
+##Installation
+Copy `inc/config-example.php` to `inc/config.php` and update with your database credentials. **BE SURE TO CHANGE THE ADMIN PASSWORD**
+
+Upload the ticket information to the database. A tool to make this easier is forthcoming.
 
 ##TODO
 
-- Optional security features
-- Better design
-- Better debug/testing functions
-- Import ticket database function
-- Sounds
+  - [ ] Add an import tool
+  - [ ] Add an export tool
+
+##Attributions
+Audio files from [-tg-station](https://github.com/tgstation/-tg-station/), licensed [CC-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/).

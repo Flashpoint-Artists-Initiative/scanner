@@ -41,3 +41,27 @@ function pick($list) {
   }
   return $list[floor(rand(0,count($list)-1))];
 }
+
+function is_admin(){
+  if (isset($_SESSION['is_admin'])){
+    if ($_SESSION['is_admin']){
+      return true;
+    }
+  }
+  return false;
+}
+
+function logEvent($what, $data) {
+  if (isset($_GET['user'])) {
+    $user = $_GET['user'];
+  } else {
+    $user = '';
+  }
+  $db = new database();
+  $db->query("INSERT INTO tbl_log (who, what, data, timestamp, username) VALUES (?, ?, ?, NOW(), ?)");
+  $db->bind(1,sha1($_SERVER['REMOTE_ADDR']));
+  $db->bind(2,$what);
+  $db->bind(3,$data);
+  $db->bind(4,$user);
+  $db->execute();
+}

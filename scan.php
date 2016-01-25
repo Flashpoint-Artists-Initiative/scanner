@@ -1,16 +1,19 @@
 <?php
 
-require_once('inc/config.php');
+require_once('inc/bootstrap.php');
+
+$col = TICKET_COL;
 
 if (empty($_GET['user'])){
-  echo json_encode(array('msg'=>"No username specified", 'code'=>0));
+  echo json_encode(array('message'=>"No username specified", 'code'=>0));
+  logEvent("NU","Tried to scan without a username");
   return;
 }
 
-if (isset($_POST['ticket_id'])){
+if (isset($_POST['ticket'])){
   $db = new database();
-  $db->query("SELECT * FROM tbl_ticket WHERE id = ?");
-  $db->bind(1, $_POST['ticket_id']);
+  $db->query("SELECT * FROM tbl_ticket WHERE $col = ?");
+  $db->bind(1, $_POST['ticket']);
   try {
     $db->execute();
   } catch (Exception $e) {
@@ -19,19 +22,25 @@ if (isset($_POST['ticket_id'])){
   }
   $result = $db->single();
   if(!$result){
-    echo json_encode(array('msg'=>"Ticket ID invalid", 'code'=>0));
+    echo json_encode(array('message'=>"Ticket ID invalid", 'code'=>0));
+    logEvent("IT","Invalid ticket id: ".$_POST['ticket']);
     return;
   }
-  if ($result->checked_in) {
-    echo json_encode(array('msg'=>"Ticket has been used", 'code'=>0));
+  if ($result->scanned) {
+    echo json_encode(array('message'=>"This ticket has been used", 'code'=>0));
+    logEvent("AS","Ticket already scanned: $result->barcode");
+    if (DEBUG) {
+      $db->query("UPDATE tbl_ticket SET scanned = 0");
+      $db->execute();
+    }
     return;
   }
   $db->query("UPDATE tbl_ticket
-    SET checked_in = 1, timestamp = NOW(), ip_addr = ?, user = ?
-    WHERE id = ?");
+    SET scanned = 1, scanned_at = NOW(), ip_addr = ?, scanned_by = ?
+    WHERE $col = ?");
   $db->bind(1,sha1($_SERVER['REMOTE_ADDR']));
   $db->bind(2, $_GET['user']);
-  $db->bind(3, $_POST['ticket_id']);
+  $db->bind(3, $_POST['ticket']);
   try {
     $db->execute();
   } catch (Exception $e) {
@@ -39,6 +48,7 @@ if (isset($_POST['ticket_id'])){
     echo "Database error: ".$e->getMessage();
   }
   http_response_code(200);
-  echo json_encode(array('msg'=>"$result->name is cleared for entry", 'code'=>1));
+  logEvent('ST',"Scanned a ticket: $result->barcode");
+  echo json_encode(array('message'=>"$result->firstname is cleared for entry", 'code'=>1));
   return;
 }

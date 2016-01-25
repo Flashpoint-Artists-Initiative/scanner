@@ -9,7 +9,7 @@ if(!is_admin()) {
 ?>
 
   <div class="page-heaer">
-    <h1>Scanned ticket log</h1>
+    <h1>Application logs</h1>
   </div>
 
   <?php
@@ -23,7 +23,7 @@ if(!is_admin()) {
     $page = 0;
     $offset = 0;
   }
-  $db->query("SELECT count(scan_ticket.barcode) AS count FROM scan_ticket WHERE scanned = 1");
+  $db->query("SELECT count(tbl_log.id) AS count FROM tbl_log");
   $db->execute();
   $rows = $db->single()->count;
   $pages = ceil($rows/$limit);
@@ -34,9 +34,8 @@ if(!is_admin()) {
   $prevpage = $page - 1;
 
 
-  $db->query("SELECT * FROM tbl_ticket
-    WHERE tbl_ticket.scanned = 1
-    ORDER BY tbl_ticket.scanned_at DESC
+  $db->query("SELECT * FROM tbl_log
+    ORDER BY tbl_log.id DESC
     LIMIT $offset, $limit");
   try {
     $db->execute();
@@ -75,28 +74,37 @@ if(!is_admin()) {
 
 <?php } ?>
 
-  <table class="table table-condensed table-bordered table-striped">
+  <table class="table table-condensed table-bordered">
     <thead>
       <tr>
-        <th>Ticket #</th>
-        <th>Name</th>
-        <th>When</th>
+        <th>ID</th>
         <th>Who</th>
-        <th>IP</th>
+        <th>Username</th>
+        <th>What</th>
+        <th>Data</th>
+        <th>When</th>
       </tr>
     </thead>
     <tbody>
       <?php foreach ($logs as $log) : ?>
+        <?php if ($log->what == 'ST') : ?>
+        <tr class="success">
+        <?php elseif ($log->what == 'IT') :?>
+        <tr class="danger">
+        <?php elseif ($log->what == 'AS') :?>
+        <tr class="warning">
+        <?php else : ?>
         <tr>
-          <td><?php echo $log->barcode;?></td>
-          <td><?php echo $log->firstname;?></td>
-          <td><?php echo timestamp($log->scanned_at);?></td>
-          <td><?php echo $log->scanned_by;?></td>
-          <td><?php echo $log->ip_addr;?></td>
+        <?php endif; ?>
+          <td><?php echo $log->id;?></td>
+          <td><?php echo $log->who;?></td>
+          <td><?php echo $log->username;?></td>
+          <td><?php echo $log->what?></td>
+          <td><?php echo $log->data;?></td>
+          <td><?php echo timestamp($log->timestamp);?></td>
         </tr>
       <?php endforeach;?>
     </tbody>
   </table>
-</div>
 </body>
 </html>

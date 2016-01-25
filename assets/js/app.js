@@ -1,15 +1,16 @@
-var ticket_id_length = 10;
+if ($('#username').val() == '') {
+  $('#username').focus();
+}
 
-$(document).ready(function(){
-  $('#ticket').focus();
-});
+var successSound = document.getElementById('successSound');
+var errorSound = document.getElementById('errorSound');
 
 $('#ticket').keyup(function(e){
   console.log(e);
   var string = $(this).val();
-  if(ticket_id_length == string.length) {
+  if(ticket_length == string.length) {
     if (''==$('#username').val()){
-      $('body').addClass('error').removeClass('success');
+      $('.jumbotron').addClass('error').removeClass('success');
       $('h1').text('You must specify a username!');
     } else {
       var request = $.ajax({
@@ -21,17 +22,35 @@ $('#ticket').keyup(function(e){
       request.done(function(data){
         console.log(data);
         if (0 == data.code){
-          $('body').addClass('error').removeClass('success');
-          $('h1').text(data.msg);
+          error(data.message);
         } else {
-          $('body').addClass('success').removeClass('error');
-          $('h1').text(data.msg);
+          success(data.message);
         }
       });
       request.fail(function(data){
         console.log(data);
+        $('.debug').html(data.responseText);
       });
       $(this).val('');
     }
   }
 });
+
+function success(message) {
+  $('.jumbotron').addClass('success').removeClass('error');
+  $('h1').text(message);
+  successSound.play();
+  //setTimeout(reset,5000);
+}
+
+function error(message) {
+  $('.jumbotron').addClass('error').removeClass('success');
+  $('h1').text(message);
+  errorSound.play();
+  //setTimeout(reset,5000);
+}
+
+function reset(){
+  $('.jumbotron').removeClass('error').removeClass('success');
+  $('h1').text("Ready to scan");
+}
