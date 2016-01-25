@@ -2,10 +2,17 @@
 
 require_once('inc/bootstrap.php');
 
+$returnCodes = array(
+  0 => 'Invalid Ticket ID',
+  1 => 'Duplicate Scan',
+  2 => 'Missing username',
+  3 => 'Success (cleared to enter)'
+);
+
 $col = TICKET_COL;
 
 if (empty($_GET['user'])){
-  echo json_encode(array('message'=>"No username specified", 'code'=>0));
+  echo json_encode(array('message'=>"No username specified", 'code'=>2));
   logEvent("NU","Tried to scan without a username");
   return;
 }
@@ -27,7 +34,7 @@ if (isset($_POST['ticket'])){
     return;
   }
   if ($result->scanned) {
-    echo json_encode(array('message'=>"This ticket has been used", 'code'=>0));
+    echo json_encode(array('message'=>"This ticket has been used", 'code'=>1, 'data'=>$result));
     logEvent("AS","Ticket already scanned: $result->barcode");
     if (DEBUG) {
       $db->query("UPDATE tbl_ticket SET scanned = 0");
@@ -49,6 +56,6 @@ if (isset($_POST['ticket'])){
   }
   http_response_code(200);
   logEvent('ST',"Scanned a ticket: $result->barcode");
-  echo json_encode(array('message'=>"$result->firstname is cleared for entry", 'code'=>1));
+  echo json_encode(array('message'=>"$result->firstname is cleared for entry", 'code'=>3));
   return;
 }

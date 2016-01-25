@@ -5,6 +5,8 @@ if ($('#username').val() == '') {
 var successSound = document.getElementById('successSound');
 var errorSound = document.getElementById('errorSound');
 
+var duplicateScan = false;
+
 $('#ticket').keyup(function(e){
   console.log(e);
   var string = $(this).val();
@@ -21,10 +23,12 @@ $('#ticket').keyup(function(e){
       });
       request.done(function(data){
         console.log(data);
-        if (0 == data.code){
-          error(data.message);
+        if (data.code <= 2){
+          error(data);
+        } else if (data.code == 3){
+          success(data);
         } else {
-          success(data.message);
+          error(data);
         }
       });
       request.fail(function(data){
@@ -36,16 +40,25 @@ $('#ticket').keyup(function(e){
   }
 });
 
-function success(message) {
+function success(data) {
   $('.jumbotron').addClass('success').removeClass('error');
-  $('h1').text(message);
+  $('h1').text(data.message);
   successSound.play();
+  if (duplicateScan) {
+    $('#ticketInfo').addClass('hide');
+    duplicateScan = false;
+  }
   //setTimeout(reset,5000);
 }
 
-function error(message) {
+function error(data) {
   $('.jumbotron').addClass('error').removeClass('success');
-  $('h1').text(message);
+  $('h1').text(data.message);
+  if (data.code == 1) {
+    $('#ticketInfo').removeClass('hide');
+    $('#ticketInfo .panel-body').text('Scanned at: '+data.data.scanned_at+' by '+data.data.scanned_by);
+    duplicateScan = true;
+  }
   errorSound.play();
   //setTimeout(reset,5000);
 }

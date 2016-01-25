@@ -12,6 +12,7 @@ input {
   font-size: 400%;
   text-align: center;
   margin: 0 auto;
+  max-width: 100%;
 }
 #username {
   font-size: 150%;
@@ -40,4 +41,9 @@ h1.jumbotron {
 
 .progress {
   height: 100px;
+}
+
+.hide {
+  display: none;
+  visibility: hidden;
 }

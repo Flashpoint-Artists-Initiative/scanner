@@ -4,8 +4,14 @@
       <input id="username" name="username" placeholder="Who are you" />
       <input id="ticket" name="ticket" placeholder="Barcode" />
     </div>
-    <pre class="debug">
-    </pre>
+    <div class="panel panel-default hide" id="ticketInfo">
+      <div class="panel-heading">
+        <h3 class="panel-title">Duplicate Ticket Info</h3>
+      </div>
+      <div class="panel-body">
+
+      </div>
+    </div>
   </div>
   <audio src="assets/audio/adminhelp.ogg" id="errorSound"></audio>
   <audio src="assets/audio/ping.ogg" id="successSound"></audio>
