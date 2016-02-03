@@ -48,7 +48,7 @@ $duplicates = $db->single()->duplicates;
     </div>
   </div>
   <div class="col-md-6">
-    <div class="panel panel-default">
+    <div class="panel panel-success">
       <div class="panel-heading">
         <h3 class="panel-title">Successful Scans</h3>
       </div>

@@ -11,21 +11,8 @@ if(!is_admin()) {
 <?php
 
 if (isset($_GET['import'])) {
-  $data = $_POST['data'];
-  $data = explode("\n",$data);
-  $db = new database();
-  $db->query("INSERT INTO tbl_ticket (firstname, barcode, scanned) VALUES (?,?, 0)");
-  $i = 0;
-  foreach ($data as $ticket) {
-    $ticket = explode(',',$ticket);
-    $db->bind(1,$ticket[0]);
-    $db->bind(2,$ticket[1]);
-    $db->execute();
-    $i++;
-  }
-  echo "<div class='alert alert-success'>Imported $i tickets</div>";
-
-  logEvent('AT',"Imported $i tickets");
+  $ticket = new ticket();
+  echo $ticket->importTickets($_POST['data']);
 }?>
 
 <div class="page-header">
