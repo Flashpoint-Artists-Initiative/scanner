@@ -93,6 +93,7 @@ $duplicates = $db->single()->duplicates;
   <div class="progress">
     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent;?>%;">
       <span class="sr-only"><?php echo $percent;?>% Scanned</span>
+      <?php echo 100==$percent?'🎉🎉💯🎉🎉':''; ?>
     </div>
   </div>
 </p>

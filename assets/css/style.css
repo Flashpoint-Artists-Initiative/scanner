@@ -47,3 +47,7 @@ h1.jumbotron {
   display: none;
   visibility: hidden;
 }
+.progress-bar {
+  font-size: 72px;
+  line-height: 110px;
+}

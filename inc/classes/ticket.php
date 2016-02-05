@@ -7,20 +7,27 @@ class ticket {
   }
 
   public function sanitizeBarcode($barcode) {
+    $barcode = trim($barcode);
+    if (TICKET_LENGTH != strlen($barcode)){
+      return FALSE;
+    }
     if (preg_match(TICKET_PREG,$barcode)){
+      $barcode = filter_var($barcode,
+      FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_HIGH);
       return $barcode;
     }
-    return false;
+    return FALSE;
   }
 
   public function scanTicket($barcode=null,$user=null) {
+    $tempcode = $barcode;
     if (!$user){
       logEvent("NU","Tried to scan $barcode without a username");
       return json_encode(array('message'=>"User not specified", 'code'=>2));
     }
     $barcode = $this->sanitizeBarcode($barcode);
     if (!$barcode) {
-      logEvent("IT","Invalid ticket id: ".$barcode);
+      logEvent("IT","Invalid ticket id: ".$tempcode);
       return json_encode(array('message'=>"Ticket ID invalid", 'code'=>0));
     }
     $col = TICKET_COL;
@@ -69,24 +76,29 @@ class ticket {
     $db = new database();
     $db->query("INSERT INTO tbl_ticket (firstname, barcode, scanned) VALUES (?,?, 0)");
     $i = 0;
+    $f = 0;
     foreach ($tickets as $ticket) {
+      $i++;
       $ticket = explode(',',$ticket);
       $barcode = $this->sanitizeBarcode($ticket[1]);
+      $invalidBarcodes = '';
       if (!$barcode){
-        return json_encode(array('message'=>"Barcode invalid: ".$ticket[1], 'code'=>0));
+        $invalidBarcodes.=$ticket[1].', ';
+        $f++;
+        $i--;
+      } else {
+        $db->bind(1,$ticket[0]);
+        $db->bind(2,$barcode);
+        try {
+          $db->execute();
+        } catch (Exception $e) {
+          $f++;
+          $i--;
+        }
       }
-      $db->bind(1,$ticket[0]);
-      $db->bind(2,$barcode);
-      try {
-        $db->execute();
-      } catch (Exception $e) {
-        http_response_code(500);
-        return "Database error: ".$e->getMessage();
-      }
-      $i++;
     }
     logEvent("AT","Imported $i tickets");
-    return json_encode(array('message'=>"Imported $i tickets", 'code'=>3));
+    return json_encode(array('message'=>"Imported $i tickets. $f tickets were invalid or duplicates and ignored.", 'code'=>3));
   }
 
 }

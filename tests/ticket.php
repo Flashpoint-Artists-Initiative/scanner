@@ -5,11 +5,10 @@ require_once('../inc/bootstrap.php');
 function testCheck($name,$data,$expected) {
   $data = json_decode($data);
   if ($data->code === $expected){
-    return "$name: Passed<br>";
+    return "Testing for: $name... Passed<br>";
   }
-  return "$name: Failed<br>";
+  return "Testing for: $name... Failed<br>";
 }
-
 
 ?>
 
