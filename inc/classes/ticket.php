@@ -7,6 +7,9 @@ class ticket {
   }
 
   public function sanitizeBarcode($barcode) {
+    if (!STRICT_CHECKING) {
+      return trim($barcode);
+    }
     $barcode = trim($barcode);
     if (TICKET_LENGTH != strlen($barcode)){
       return FALSE;

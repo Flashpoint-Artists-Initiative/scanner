@@ -19,11 +19,11 @@ Ticket regular expression match: <?php echo TICKET_PREG;?><br>
 Ticket table: <?php echo TICKET_TABLE;?><br>
 Barcode column: <?php echo TICKET_COL;?><br>
 Scanned boolean column: <?php echo SCAN_COL;?><br>
+Strict barcode checking is: <?php echo !STRICT_CHECKING?'Disabled':'Enabled';?><br>
 <?php
 $ticket = new ticket();
 
-$barcode = 'ABC12345678';
-echo testCheck("Import denied",$ticket->importTickets("Testing,TESTINGTESTING\nTesting,TESTINGTESTING"),0);
+$barcode = 'ZZZ111111111';
 echo testCheck("Successful import",$ticket->importTickets("Testing,$barcode"),3);
 
 
