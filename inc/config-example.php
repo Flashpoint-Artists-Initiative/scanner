@@ -9,3 +9,5 @@ define('DB_HOST', 'localhost');//Probably won't need to change
 define('TBL_PREFIX', 'CHANGEME');
 
 define('ADMIN_PASS','CHANGEME');
+
+define('DEBUG',FALSE);
