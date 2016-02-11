@@ -54,7 +54,7 @@ class ticket {
         $db->query("UPDATE tbl_ticket SET scanned = 0");
         $db->execute();
       }
-      return json_encode(array('message'=>"This ticket has been used", 'code'=>1, 'data'=>$result));
+      return json_encode(array('message'=>"This ticket has already been scanned", 'code'=>1, 'data'=>$result));
     }
     $db->query("UPDATE tbl_ticket
       SET scanned = 1, scanned_at = NOW(), ip_addr = ?, scanned_by = ?

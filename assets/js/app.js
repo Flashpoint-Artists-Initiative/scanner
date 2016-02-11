@@ -23,12 +23,18 @@ $('#ticket').keyup(function(e){
       });
       request.done(function(data){
         console.log(data);
-        if (data.code <= 2){
-          error(data);
-        } else if (data.code == 3){
-          success(data);
-        } else {
-          error(data);
+        switch(data.code){
+          default:
+          case 0:
+          case 2:
+            error(data);
+          break;
+          case 1:
+            duplicate(data);
+          break;
+          case 3:
+            success(data);
+          break;
         }
       });
       request.fail(function(data){
@@ -41,7 +47,7 @@ $('#ticket').keyup(function(e){
 });
 
 function success(data) {
-  $('.jumbotron').addClass('success').removeClass('error');
+  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-success progress-bar-striped');
   $('h1').text(data.message);
   successSound.play();
   if (duplicateScan) {
@@ -51,16 +57,25 @@ function success(data) {
   //setTimeout(reset,5000);
 }
 
-function error(data) {
-  $('.jumbotron').addClass('error').removeClass('success');
+function duplicate(data) {
+  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-warning progress-bar-striped');
   $('h1').text(data.message);
-  if (data.code == 1) {
-    $('#ticketInfo').removeClass('hide');
-    $('#ticketInfo .panel-body').text('Scanned at: '+data.data.scanned_at+' by '+data.data.scanned_by);
-    duplicateScan = true;
-  }
+  duplicateSound.play();
+  $('#ticketInfo').removeClass('hide');
+  $('#ticketInfo .panel-body').text('Scanned at: '+data.data.scanned_at+' by '+data.data.scanned_by);
+  duplicateScan = true;
+  //setTimeout(reset,5000);
+}
+
+function error(data) {
+  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-danger progress-bar-striped');
+  $('h1').text(data.message);
   errorSound.play();
   //setTimeout(reset,5000);
+  if (duplicateScan) {
+    $('#ticketInfo').addClass('hide');
+    duplicateScan = false;
+  }
 }
 
 function reset(){

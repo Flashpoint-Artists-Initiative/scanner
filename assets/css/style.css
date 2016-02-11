@@ -29,6 +29,11 @@ input {
   color: white;
 }
 
+.duplicate {
+  background: yellow;
+  color: black;
+}
+
 tr.success {
   color: black;
 }
