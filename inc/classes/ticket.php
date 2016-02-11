@@ -23,16 +23,23 @@ class ticket {
   }
 
   public function scanTicket($barcode=null,$user=null) {
+    $scanner = new scanner();
     $tempcode = $barcode;
+
+    //No username specified. Aborting
     if (!$user){
-      logEvent("NU","Tried to scan $barcode without a username");
+      $scanner->logEvent("NU","Tried to scan $barcode without a username");
       return json_encode(array('message'=>"User not specified", 'code'=>2));
     }
+
+    //Scanned barcode did not match our sanitization filters.
     $barcode = $this->sanitizeBarcode($barcode);
     if (!$barcode) {
-      logEvent("IT","Invalid ticket id: ".$tempcode);
+      $scanner->logEvent("IS","Invalid scan. Barcode: ".$tempcode);
       return json_encode(array('message'=>"Ticket ID invalid", 'code'=>0));
     }
+
+    //Barcode was scanned correctly. Perform the database lookup
     $col = TICKET_COL;
     $db = new database();
     $db->query("SELECT * FROM tbl_ticket WHERE $col = ?");
@@ -40,22 +47,32 @@ class ticket {
     try {
       $db->execute();
     } catch (Exception $e) {
-      http_response_code(500);
       return "Database error: ".$e->getMessage();
     }
     $result = $db->single();
+
+    //If the barcode didn't match anything in our database, throw an error
     if(!$result){
-      logEvent("IT","Invalid ticket id: ".$barcode);
+      $scanner->logEvent("IS","Invalid ticket id: ".$barcode);
       return json_encode(array('message'=>"Ticket ID invalid", 'code'=>0));
     }
+
+    //If the barcode is in the database, but is already marked as scanned,
+    //throw an error AND send information about the ticket back
     if ($result->scanned) {
-      logEvent("AS","Ticket already scanned: $result->barcode");
+      $scanner->logEvent("DS","Ticket already scanned: $result->barcode");
+
+      //Under debug conditions, mark this ticket as NOT SCANNED
       if (DEBUG) {
-        $db->query("UPDATE tbl_ticket SET scanned = 0");
+        $db->query("UPDATE tbl_ticket SET scanned = 0 WHERE $col = ?");
+        $db->bind(1,$barcode);
         $db->execute();
       }
       return json_encode(array('message'=>"This ticket has already been scanned", 'code'=>1, 'data'=>$result));
     }
+
+    //Otherwise, mark the ticket as scanned, set when it was scanned and the
+    //username of whoever scanned it.
     $db->query("UPDATE tbl_ticket
       SET scanned = 1, scanned_at = NOW(), ip_addr = ?, scanned_by = ?
       WHERE $col = ?");
@@ -65,43 +82,67 @@ class ticket {
     try {
       $db->execute();
     } catch (Exception $e) {
-      http_response_code(500);
       return "Database error: ".$e->getMessage();
     }
-    http_response_code(200);
-    logEvent('ST',"Scanned a ticket: $result->barcode");
+    $scanner->logEvent('ST',"Scanned a ticket: $result->barcode");
     return json_encode(array('message'=>"$result->firstname is cleared for entry", 'code'=>3));
   }
 
   public function importTickets($tickets){
+    $db = new database();
+    $scanner = new scanner();
+
+    //Split our bundle of tickets into separate arrays
     $tickets = explode("\n",$tickets);
 
-    $db = new database();
+    //Prep the query
     $db->query("INSERT INTO tbl_ticket (firstname, barcode, scanned) VALUES (?,?, 0)");
-    $i = 0;
-    $f = 0;
+    $i = 0; //Number of attempted imports
+    $f = 0; //Number of failures (invalid barcodes)
     foreach ($tickets as $ticket) {
-      $i++;
-      $ticket = explode(',',$ticket);
+      $i++; //Increse attempt count
+      $ticket = explode(',',$ticket); //kaboom
       $barcode = $this->sanitizeBarcode($ticket[1]);
-      $invalidBarcodes = '';
+      //Check if the barcode fits whatever pattern we're using.
+
+      $invalidBarcodes = ''; //Empty string of invalid barcodes
       if (!$barcode){
         $invalidBarcodes.=$ticket[1].', ';
-        $f++;
-        $i--;
+        $f++; //Failed import increase
+        $i--; //Decrease attempt count
       } else {
         $db->bind(1,$ticket[0]);
         $db->bind(2,$barcode);
         try {
           $db->execute();
         } catch (Exception $e) {
-          $f++;
+          $f++; //Same thing here. This catches duplicate barcodes
           $i--;
         }
       }
     }
-    logEvent("AT","Imported $i tickets");
+    $scanner->logEvent("IT","Imported $i tickets");
     return json_encode(array('message'=>"Imported $i tickets. $f tickets were invalid or duplicates and ignored.", 'code'=>3));
+  }
+
+  public function getLogs($offset=0, $count=30) {
+    $db = new database();
+    $db->query("SELECT tbl_ticket.*
+      FROM tbl_ticket
+      WHERE tbl_ticket.scanned = 1
+      ORDER BY tbl_ticket.scanned_at DESC
+      LIMIT $offset, $count");
+    try {
+      $db->execute();
+    } catch (Exception $e) {
+      return "Database error: ".$e->getMessage();
+    }
+    $logs = new stdclass();
+    $logs->logs = $db->resultset();
+    $db->query("SELECT COUNT(tbl_ticket.barcode) AS count FROM tbl_ticket WHERE scanned = 1");
+    $db->execute();
+    $logs->total = $db->single()->count;
+    return $logs;
   }
 
 }

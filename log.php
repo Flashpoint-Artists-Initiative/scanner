@@ -13,7 +13,6 @@ if(!is_admin()) {
   </div>
 
   <?php
-  $db = new database();
   $limit = 30;
 
   if(isset($_GET['page'])){
@@ -23,9 +22,11 @@ if(!is_admin()) {
     $page = 0;
     $offset = 0;
   }
-  $db->query("SELECT count(scan_ticket.barcode) AS count FROM scan_ticket WHERE scanned = 1");
-  $db->execute();
-  $rows = $db->single()->count;
+
+  $ticket = new ticket();
+  $logs = $ticket->getLogs($offset, $limit);
+
+  $rows = $logs->total;
   $pages = ceil($rows/$limit);
 
   $i = 0;
@@ -33,43 +34,32 @@ if(!is_admin()) {
   $nextpage = $page + 1;
   $prevpage = $page - 1;
 
-
-  $db->query("SELECT * FROM tbl_ticket
-    WHERE tbl_ticket.scanned = 1
-    ORDER BY tbl_ticket.scanned_at DESC
-    LIMIT $offset, $limit");
-  try {
-    $db->execute();
-  } catch (Exception $e) {
-    echo "Database error: ".$e->getMessage();
-  }
-  $logs = $db->resultset();
+  $logs = $logs->logs;
 
   if ($pages > 1) {
   ?>
 
   <ul class='pagination'>
     <?php if ($prevpage >= 0): ?>
-    <li><a href="?action=viewLogs&page=<?php echo $prevpage;?>">&laquo;</a></li>
+    <li><a href="?page=<?php echo $prevpage;?>">&laquo;</a></li>
     <?php endif; ?>
-
     <?php while ($i<=$pages-1) :?>
       <?php if ($i == $page) :?>
         <li class='active'>
-          <a href="?action=viewLogs&page=<?php echo $i;?>">
+          <a href="?page=<?php echo $i;?>">
             <?php echo $i+1;?>
           </a>
         </li>
       <?php else :?>
         <li>
-          <a href="?action=viewLogs&page=<?php echo $i;?>">
+          <a href="?page=<?php echo $i;?>">
             <?php echo $i+1;?>
           </a>
         </li>
       <?php endif;?>
     <?php $i++; endwhile;?>
     <?php if ($nextpage < $pages) : ?>
-    <li><a href="?action=viewLogs&page=<?php echo $nextpage;?>">&raquo;</a></li>
+    <li><a href="?page=<?php echo $nextpage;?>">&raquo;</a></li>
     <?php endif;?>
   </ul>
 

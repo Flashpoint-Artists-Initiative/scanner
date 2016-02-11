@@ -10,6 +10,8 @@ function testCheck($name,$data,$expected) {
   return "Testing for: $name... Failed<br>";
 }
 
+$_GET['user'] = 'testSuite';
+
 ?>
 
 <h1>Ticket Test Suite</h1>

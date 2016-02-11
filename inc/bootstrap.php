@@ -8,6 +8,7 @@ mb_language('uni');
 mb_regex_encoding('UTF-8');
 ob_start('mb_output_handler');
 
+date_default_timezone_set('America/New_York');
 //Definitions
 define('DEBUG',TRUE);
 

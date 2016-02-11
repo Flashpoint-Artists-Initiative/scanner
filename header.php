@@ -52,14 +52,18 @@ if(isset($_GET['login'])){
               <li><a href="dashboard.php">Dashboard</a></li>
             <?php endif; ?>
           </ul>
-          <p class="navbar-text navbar-right">
+
           <?php
-          if (is_admin()){
-            echo "<a href='?logout'>Logout</a>";
-          } else {
-            require_once('admin-pw-form.php');
-          }
-          ?>
+          if(DEBUG && is_admin()): ?>
+            <p class='navbar-text'>
+              <span class='label label-danger'>DEBUG ON</span>
+            </p>
+          <?php endif; ?>
+
+          <p class="navbar-text navbar-right">
+          <?php if (is_admin()):?>
+          <a href='?logout'>Logout</a>
+          <?php else: require_once('admin-pw-form.php'); endif;?>
          </p>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
