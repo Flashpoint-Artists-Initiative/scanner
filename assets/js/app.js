@@ -8,19 +8,20 @@ var errorSound = document.getElementById('errorSound');
 var duplicateScan = false;
 
 $('#ticket').keyup(function(e){
-  console.log(e);
-  var string = $(this).val();
-  if(ticket_length == string.length) {
-    if (''==$('#username').val()){
+  if(event.keyCode == 13) { //Detect the enter key being pressed
+    if ('' == $('#username').val()){
+      //Throw a clientside error if there is no username entered
       $('.jumbotron').addClass('error').removeClass('success');
       $('h1').text('You must specify a username!');
     } else {
+      //Otherwise, format the request and send it to scan.php
       var request = $.ajax({
         url: 'scan.php?user='+$('#username').val(),
         data: $(this).serialize(),
         method: 'POST',
         dataType: 'json'
       });
+      //Here come the responses
       request.done(function(data){
         console.log(data);
         switch(data.code){
@@ -47,7 +48,7 @@ $('#ticket').keyup(function(e){
 });
 
 function success(data) {
-  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-success progress-bar-striped');
+  jumbotron('success');
   $('h1').text(data.message);
   successSound.play();
   if (duplicateScan) {
@@ -58,7 +59,7 @@ function success(data) {
 }
 
 function duplicate(data) {
-  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-warning progress-bar-striped');
+  jumbotron('warning');
   $('h1').text(data.message);
   duplicateSound.play();
   $('#ticketInfo').removeClass('hide');
@@ -68,7 +69,7 @@ function duplicate(data) {
 }
 
 function error(data) {
-  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-danger progress-bar-striped');
+  jumbotron('danger');
   $('h1').text(data.message);
   errorSound.play();
   //setTimeout(reset,5000);
@@ -76,6 +77,10 @@ function error(data) {
     $('#ticketInfo').addClass('hide');
     duplicateScan = false;
   }
+}
+
+function jumbotron(state){
+  $('.jumbotron').attr('class','jumbotron').addClass('progress-bar-'+state+' progress-bar-striped');
 }
 
 function reset(){
