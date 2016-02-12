@@ -1,3 +1,12 @@
+<div class="container">
+
+<footer>
+  <hr>
+  <?php echo HELP_LINE; ?>
+</footer>
+
+</div>
+
 <audio src="assets/audio/adminhelp.ogg" id="errorSound"></audio>
 <audio src="assets/audio/notice2.ogg" id="successSound"></audio>
 <audio src="assets/audio/buzz-two.ogg" id="duplicateSound"></audio>

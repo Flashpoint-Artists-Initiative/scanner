@@ -20,6 +20,12 @@ class scanner {
   }
 
   public function logEvent($what, $data) {
+    $defineWhat = array(
+      "ST"=>"Scanned Ticket",
+      "DS"=>"Duplicate scan",
+      "IS"=>"Invalid scan (barcode not in database)",
+      "NU"=>"No username specified"
+    );
     $db = new database();
     if (isset($_GET['user'])) {
       $user = $_GET['user'];

@@ -81,9 +81,9 @@ if(!is_admin()) {
       <?php foreach ($logs as $log) : ?>
         <?php if ($log->what == 'ST') : ?>
         <tr class="success">
-        <?php elseif ($log->what == 'IT') :?>
+        <?php elseif ($log->what == 'IS') :?>
         <tr class="danger">
-        <?php elseif ($log->what == 'AS') :?>
+        <?php elseif ($log->what == 'DS') :?>
         <tr class="warning">
         <?php else : ?>
         <tr>

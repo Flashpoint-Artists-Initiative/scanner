@@ -11,3 +11,5 @@ define('TBL_PREFIX', 'CHANGEME');
 define('ADMIN_PASS','CHANGEME');
 
 define('DEBUG',FALSE);
+
+define('HELP_LINE',"Don't panic.");
