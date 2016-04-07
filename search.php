@@ -1,5 +1,9 @@
 <?php require_once('header.php'); ?>
 
+<div class="page-header">
+  <h1>Ticket search</h1>
+</div>
+
 <?php
 
 if(!is_admin()) {
@@ -31,36 +35,41 @@ if (isset($_GET['searchby'])){
     <table class="table table-condensed table-bordered table-striped">
       <thead>
         <tr>
-          <th>Ticket #</th>
+          <th>Barcode</th>
           <th>Name</th>
-          <th>When</th>
-          <th>Who</th>
-          <th>IP</th>
+          <th>Date Scanned</th>
+          <th>Scanned by</th>
+          <th>From IP</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($tickets as $result) : ?>
-          <tr>
-            <td><?php echo $result->barcode;?></td>
-            <td><?php echo $result->firstname;?></td>
-            <td><?php echo timestamp($result->scanned_at);?></td>
+        <?php foreach ($tickets as $result) :
+          $result = $ticket->parseTicket($result);?>
+          <tr <?php echo ($result->scanned) ? "class='success'" : ''; ?>>
+            <td><code><?php echo $result->barcode;?></code></td>
+            <td><?php echo $result->firstname.' '.$result->lastname?></td>
+            <?php if($result->scanned) : ?>
+              <td><?php echo timestamp($result->scanned_at);?></td>
+            <?php else : ?>
+              <td>Not Scanned Yet</td>
+            <?php endif; ?>
             <td><?php echo $result->scanned_by;?></td>
-            <td><?php echo $result->ip_addr;?></td>
+            <?php if (!$result->scanned) : ?>
+              <td><?php echo $result->ip_addr;?></td>
+              <td>
+                <a href="<?php echo $result->scanlink;?>">Manual check in</a>
+              </td>
+            <?php else : ?>
+              <td colspan='2'><?php echo $result->ip_addr;?></td>
+            <?php endif; ?>
           </tr>
         <?php endforeach;?>
       </tbody>
     </table>
   </div>
 
-  <?php 
-}
-
-
-?>
-
-  <div class="page-header">
-    <h1>Ticket search</h1>
-  </div>
+  <?php } ?>
 
 <div class="row">
 <div class="col-md-4">

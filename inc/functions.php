@@ -32,9 +32,9 @@ function relativeTime($date, $postfix = 'ago') {
 }
 
 function timestamp($date,$override=TRUE) {
-  $return = "<span class='time' data-toggle='tooltip' title='".date('D d-m-Y at H:i:s',strtotime($date))."'>";
+  $return = "<span class='time' data-toggle='tooltip' title='".date(DATE_FORMAT,strtotime($date))."'>";
   if ($override){
-    $return.= date('D d-m-Y \a\t H:i:s',strtotime($date));
+    $return.= date(DATE_FORMAT,strtotime($date));
   } else {
     $return.= relativeTime($date);
   }

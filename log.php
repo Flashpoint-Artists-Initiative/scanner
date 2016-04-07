@@ -68,7 +68,7 @@ if(!is_admin()) {
   <table class="table table-condensed table-bordered table-striped">
     <thead>
       <tr>
-        <th>Ticket #</th>
+        <th>Barcode</th>
         <th>Name</th>
         <th>When</th>
         <th>Who</th>
@@ -78,8 +78,8 @@ if(!is_admin()) {
     <tbody>
       <?php foreach ($logs as $log) : ?>
         <tr>
-          <td><?php echo $log->barcode;?></td>
-          <td><?php echo $log->firstname;?></td>
+          <td><code><?php echo $log->barcode;?></code></td>
+          <td><?php echo $log->firstname. ' '.$log->lastname;?></td>
           <td><?php echo timestamp($log->scanned_at);?></td>
           <td><?php echo $log->scanned_by;?></td>
           <td><?php echo $log->ip_addr;?></td>

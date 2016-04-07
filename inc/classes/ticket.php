@@ -7,11 +7,12 @@ class ticket {
   }
 
   public function parseTicket(&$ticket){
-    if($ticket->scanned+0){ //PDO can't cast properly
-      $ticket->scanned = TRUE;
-    } else {
-      $ticket->scanned = FALSE;
+    $ticket->scanned = $ticket->scanned + 0;
+    if ('0000-00-00 00:00:00' === $ticket->scanned_at) {
+      $ticket->scanned_at = FALSE;
     }
+    $ticket->scanlink = "scan.php?user=manualOverride&barcode=$ticket->barcode&format=html";
+
     return $ticket;
   }
 
@@ -195,8 +196,9 @@ class ticket {
 
   public function searchByName($string) {
     $db = new database();
-    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.firstname LIKE ?");
+    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.firstname LIKE ? OR tbl_ticket.lastname LIKE ?");
     $db->bind(1,'%'.$string.'%');
+    $db->bind(2,'%'.$string.'%');
     $db->execute();
     return $db->resultSet();
   }
