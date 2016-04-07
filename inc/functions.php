@@ -31,8 +31,16 @@ function relativeTime($date, $postfix = 'ago') {
   return "$return $postfix";
 }
 
-function timestamp($date) {
-	return "<span class='time' data-toggle='tooltip' title='".date('l jS \of F Y h:i:s A',strtotime($date))."'>".relativeTime($date)."</span>";
+function timestamp($date,$override=TRUE) {
+  $return = "<span class='time' data-toggle='tooltip' title='".date('D d-m-Y at H:i:s',strtotime($date))."'>";
+  if ($override){
+    $return.= date('D d-m-Y \a\t H:i:s',strtotime($date));
+  } else {
+    $return.= relativeTime($date);
+  }
+  $return.= "</span>";
+
+  return $return;
 }
 
 function pick($list) {

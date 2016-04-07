@@ -8,7 +8,7 @@ if(!is_admin()) {
 }
 ?>
 
-  <div class="page-heaer">
+  <div class="page-header">
     <h1>Scanned ticket log</h1>
   </div>
 

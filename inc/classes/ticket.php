@@ -6,6 +6,15 @@ class ticket {
 
   }
 
+  public function parseTicket(&$ticket){
+    if($ticket->scanned+0){ //PDO can't cast properly
+      $ticket->scanned = TRUE;
+    } else {
+      $ticket->scanned = FALSE;
+    }
+    return $ticket;
+  }
+
   public function sanitizeBarcode($barcode) {
     if (!STRICT_CHECKING) {
       return trim($barcode);
@@ -143,6 +152,53 @@ class ticket {
     $db->execute();
     $logs->total = $db->single()->count;
     return $logs;
+  }
+
+  public function searchTickets($method='barcode',$string=null){
+    if (!$string) {
+      return "No search string specified";
+    }
+    switch($method){
+      default:
+        return "No search parameter specified";
+      break;
+
+      case 'barcode':
+        return $this->searchByBarcode($string);
+      break;
+
+      case 'name':
+        return $this->searchByName($string);
+      break;
+
+      case 'email':
+        return $this->searchByEmail($string);
+      break;
+    }
+  }
+
+  public function searchByBarcode($string) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.barcode = ?");
+    $db->bind(1,$string);
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function searchByEmail($string) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.order_email LIKE ?");
+    $db->bind(1,'%'.$string.'%');
+    $db->execute();
+    return $db->resultSet();
+  }
+
+  public function searchByName($string) {
+    $db = new database();
+    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.firstname LIKE ?");
+    $db->bind(1,'%'.$string.'%');
+    $db->execute();
+    return $db->resultSet();
   }
 
 }

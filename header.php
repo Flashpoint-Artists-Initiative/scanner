@@ -50,6 +50,7 @@ if(isset($_GET['login'])){
               <li><a href="log.php">Ticket Logs</a></li>
               <li><a href="import.php">Import Tickets</a></li>
               <li><a href="app-log.php">Application Logs</a></li>
+              <li><a href="search.php">Search</a></li>
               <li><a href="dashboard.php">Dashboard</a></li>
             <?php endif; ?>
           </ul>
