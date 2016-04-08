@@ -10,6 +10,8 @@ class ticket {
     $ticket->scanned = $ticket->scanned + 0;
     if ('0000-00-00 00:00:00' === $ticket->scanned_at) {
       $ticket->scanned_at = FALSE;
+    } else {
+      $ticket->scanned_at = timestamp($ticket->scanned_at);
     }
     $ticket->scanlink = "scan.php?user=manualOverride&barcode=$ticket->barcode&format=html";
 
@@ -78,7 +80,7 @@ class ticket {
         $db->bind(1,$barcode);
         $db->execute();
       }
-      return json_encode(array('message'=>"This ticket has already been scanned", 'code'=>1, 'data'=>$result));
+      return json_encode(array('message'=>"This ticket has already been scanned", 'code'=>1, 'data'=>$this->parseTicket($result)));
     }
 
     //Otherwise, mark the ticket as scanned, set when it was scanned and the

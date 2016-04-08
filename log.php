@@ -80,7 +80,7 @@ if(!is_admin()) {
         <tr>
           <td><code><?php echo $log->barcode;?></code></td>
           <td><?php echo $log->firstname. ' '.$log->lastname;?></td>
-          <td><?php echo timestamp($log->scanned_at);?></td>
+          <td><?php echo $log->scanned_at;?></td>
           <td><?php echo $log->scanned_by;?></td>
           <td><?php echo $log->ip_addr;?></td>
         </tr>

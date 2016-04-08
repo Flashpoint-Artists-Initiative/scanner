@@ -63,7 +63,7 @@ function duplicate(data) {
   $('h1').text(data.message);
   duplicateSound.play();
   $('#ticketInfo').removeClass('hide');
-  $('#ticketInfo .panel-body').text('Scanned at: '+data.data.scanned_at+' by '+data.data.scanned_by);
+  $('#ticketInfo .panel-body').html('Scanned at: '+data.data.scanned_at+' by '+data.data.scanned_by);
   duplicateScan = true;
   //setTimeout(reset,5000);
 }

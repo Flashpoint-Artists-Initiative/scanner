@@ -50,7 +50,7 @@ if (isset($_GET['searchby'])){
             <td><code><?php echo $result->barcode;?></code></td>
             <td><?php echo $result->firstname.' '.$result->lastname?></td>
             <?php if($result->scanned) : ?>
-              <td><?php echo timestamp($result->scanned_at);?></td>
+              <td><?php echo $result->scanned_at;?></td>
             <?php else : ?>
               <td>Not Scanned Yet</td>
             <?php endif; ?>
