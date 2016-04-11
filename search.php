@@ -1,5 +1,11 @@
 <?php require_once('header.php'); ?>
 
+<ol class="breadcrumb">
+  <li><a href="index.php">Scan</a></li>
+  <li class="active">Search</li>
+</ol>
+
+
 <div class="page-header">
   <h1>Ticket search</h1>
 </div>
@@ -37,6 +43,7 @@ if (isset($_GET['searchby'])){
         <tr>
           <th>Barcode</th>
           <th>Name</th>
+          <th>Email</th>
           <th>Date Scanned</th>
           <th>Scanned by</th>
           <th>From IP</th>
@@ -47,8 +54,9 @@ if (isset($_GET['searchby'])){
         <?php foreach ($tickets as $result) :
           $result = $ticket->parseTicket($result);?>
           <tr <?php echo ($result->scanned) ? "class='success'" : ''; ?>>
-            <td><code><?php echo $result->barcode;?></code></td>
+            <td><?php echo $result->ticketLink;?></td>
             <td><?php echo $result->firstname.' '.$result->lastname?></td>
+            <td><?php echo $result->order_email; ?></td>
             <?php if($result->scanned) : ?>
               <td><?php echo $result->scanned_at;?></td>
             <?php else : ?>
@@ -58,7 +66,7 @@ if (isset($_GET['searchby'])){
             <?php if (!$result->scanned) : ?>
               <td><?php echo $result->ip_addr;?></td>
               <td>
-                <a href="<?php echo $result->scanlink;?>">Manual check in</a>
+                <?php echo $result->scanlink;?>
               </td>
             <?php else : ?>
               <td colspan='2'><?php echo $result->ip_addr;?></td>

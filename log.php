@@ -78,7 +78,8 @@ if(!is_admin()) {
     <tbody>
       <?php foreach ($logs as $log) : ?>
         <tr>
-          <td><code><?php echo $log->barcode;?></code></td>
+          <?php $log = $ticket->parseTicket($log); ?>
+          <td><?php echo $log->ticketLink;?></td>
           <td><?php echo $log->firstname. ' '.$log->lastname;?></td>
           <td><?php echo $log->scanned_at;?></td>
           <td><?php echo $log->scanned_by;?></td>

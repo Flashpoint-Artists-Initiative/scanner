@@ -13,9 +13,24 @@ class ticket {
     } else {
       $ticket->scanned_at = timestamp($ticket->scanned_at);
     }
-    $ticket->scanlink = "scan.php?user=manualOverride&barcode=$ticket->barcode&format=html";
-
+    $ticket->fullStatus = "Not scanned";
+    if ($ticket->scanned) {
+      $ticket->fullStatus = "Scanned";
+    }
+    $ticket->scanlink = "<a href='scan.php?user=manualOverride&barcode=$ticket->barcode&format=html' class='btn btn-success btn-xs'>";
+    $ticket->scanlink.= "Manual Check In</a>";
+    $ticket->ticketLink = "<a href='viewTicket.php?barcode=$ticket->barcode'>";
+    $ticket->ticketLink.= "<code>$ticket->barcode</code></a>";
     return $ticket;
+  }
+
+  public function getByBarcode($barcode) {
+    $db = new database();
+    $db->query("SELECT tbl_ticket.* FROM tbl_ticket WHERE barcode = ?");
+    $db->bind(1,$this->sanitizeBarcode($barcode));
+    $db->execute();
+    $ticket = $db->single();
+    return $this->parseTicket($ticket);
   }
 
   public function sanitizeBarcode($barcode) {
