@@ -12,7 +12,7 @@ $('#ticket').keyup(function(e){
     if ('' == $('#username').val()){
       //Throw a clientside error if there is no username entered
       $('.jumbotron').addClass('error').removeClass('success');
-      $('h1').text('You must specify a username!');
+      $('h1').text('You must specify a username in the username field!');
     } else {
       //Otherwise, format the request and send it to scan.php
       var request = $.ajax({

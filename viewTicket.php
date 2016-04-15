@@ -10,7 +10,7 @@
 <ol class="breadcrumb">
   <li><a href="index.php">Scan</a></li>
   <li><a href="search.php">Search</a></li>
-  <li class="active">#<?php echo $ticket->barcode;?></li>
+  <li class="active">#  <?php echo $ticket->barcode;?></li>
 </ol>
 
 <div class="page-header">
@@ -35,19 +35,23 @@
   <small>Order number</small>
   <?php echo $ticket->Order;?>
 </h2>
+<h2><small>Ticket Type</small>
+<?php echo $ticket->ticket;?>
+</h2>
 <h2>
   <small>Status</small>
   <?php echo $ticket->fullStatus;?>
 </h2>
 <?php if ($ticket->scanned): ?>
-<h2>
-  <small>Scanned at</small>
-  <?php echo $ticket->scanned_at;?>
-</h2>
-<h2>
-  <small>Scanned by</small>
-  <?php echo $ticket->scanned_by;?>
-</h2>
+  <hr>
+  <h2>
+    <small>Scanned at</small>
+    <?php echo $ticket->scanned_at;?>
+  </h2>
+  <h2>
+    <small>Scanned by</small>
+    <?php echo $ticket->scanned_by;?>
+  </h2>
 <?php endif;?>
 
 <?php

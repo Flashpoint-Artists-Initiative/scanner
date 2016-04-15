@@ -1,7 +1,7 @@
 <?php require_once('header.php'); ?>
     <div class="jumbotron">
       <h1>Ready to scan</h1>
-      <input id="username" name="username" placeholder="Who are you" />
+      <input id="username" name="username" placeholder="Username" />
       <input id="ticket" name="ticket" placeholder="Barcode" />
     </div>
     <div class="panel panel-default hide" id="ticketInfo">

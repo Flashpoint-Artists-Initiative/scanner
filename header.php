@@ -28,7 +28,7 @@ if(isset($_GET['login'])){
     <link href="assets/css/style.css" rel="stylesheet" />
   </head>
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -44,7 +44,7 @@ if(isset($_GET['login'])){
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="main">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav hidden-xs hidden-sm hidden-md">
             <li><a href="index.php">Scan</a></li>
             <?php if(is_admin()) : ?>
               <li><a href="log.php">Ticket Logs</a></li>

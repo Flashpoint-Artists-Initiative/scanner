@@ -1,5 +1,5 @@
 body {
-  padding: 60px 0;
+  padding: 0 0 60px 0;
 }
 .jumbotron {
   text-align: center;
@@ -55,4 +55,11 @@ h1.jumbotron {
 .progress-bar {
   font-size: 72px;
   line-height: 110px;
+}
+.toolbar .glyphicon {
+  font-size: 200%;
+}
+
+.toolbar > li {
+  float: left;
 }
