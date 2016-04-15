@@ -32,6 +32,14 @@ $invalidCount = $db->single()->invalid;
 $db->query("SELECT count(tbl_log.id) AS duplicates FROM scan_log WHERE tbl_log.what = 'AS';");
 $db->execute();
 $duplicates = $db->single()->duplicates;
+
+$db->query("SELECT tbl_ticket.ticket,
+COUNT(DISTINCT tbl_ticket.barcode) AS total,
+SUM(CASE WHEN (tbl_ticket.scanned = 1) THEN 1 ELSE 0 END) AS num_scanned
+FROM tbl_ticket
+GROUP BY tbl_ticket.ticket");
+$db->execute();
+$typeBreakdown = $db->resultset();
 ?>
 
 <div class="row">
@@ -97,4 +105,25 @@ $duplicates = $db->single()->duplicates;
     </div>
   </div>
 </p>
+
+<h1>Breakdown by ticket type</h1>
+
+<table class="table table-condensed table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Total Tickets</th>
+      <th>Number Scanned</th>
+    </tr>
+  </thead>
+  <tbody>
+  <?php foreach ($typeBreakdown as $type) :?>
+    <tr>
+      <th><?php echo $type->ticket;?></th>
+      <td><?php echo $type->total; ?></td>
+      <td><?php echo $type->num_scanned; ?></td>
+    </tr>
+  <?php endforeach;?>
+  </tbody>
+</table>
 <?php require_once('footer.php'); ?>
