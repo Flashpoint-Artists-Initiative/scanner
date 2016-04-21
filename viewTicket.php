@@ -1,5 +1,13 @@
 <?php require_once('header.php'); ?>
 
+<?php
+
+if(!is_admin()) {
+  echo "<div class='alert alert-danger'>You must be an administrator to view this page!</div>";
+  die();
+}
+?>
+
 <?php if (isset($_GET['barcode'])) :
   $ticket = new ticket();
   $ticket = $ticket->getByBarcode($_GET['barcode']);
@@ -53,16 +61,5 @@
     <?php echo $ticket->scanned_by;?>
   </h2>
 <?php endif;?>
-
-<?php
-
-if(!is_admin()) {
-  echo "<div class='alert alert-danger'>You must be an administrator to view this page!</div>";
-  die();
-}
-?>
-
-
-
 
 <?php require_once('footer.php'); ?>

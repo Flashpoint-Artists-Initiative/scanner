@@ -19,7 +19,8 @@ class ticket {
     }
     $ticket->scanlink = "<a href='scan.php?user=manualOverride&barcode=$ticket->barcode&format=html' class='btn btn-success btn-xs'>";
     $ticket->scanlink.= "Manual Check In</a>";
-    $ticket->ticketLink = "<a href='viewTicket.php?barcode=$ticket->barcode'>";
+    $ticket->ticketLink = "<span class='glyphicon glyphicon-barcode'></span> ";
+    $ticket->ticketLink.= "<a href='viewTicket.php?barcode=$ticket->barcode'>";
     $ticket->ticketLink.= "<code>$ticket->barcode</code></a>";
     return $ticket;
   }
@@ -174,11 +175,11 @@ class ticket {
 
   public function searchTickets($method='barcode',$string=null){
     if (!$string) {
-      return "No search string specified";
+      return false;
     }
     switch($method){
       default:
-        return "No search parameter specified";
+        return false;
       break;
 
       case 'barcode':
@@ -213,9 +214,8 @@ class ticket {
 
   public function searchByName($string) {
     $db = new database();
-    $db->query("SELECT * FROM tbl_ticket WHERE tbl_ticket.firstname LIKE ? OR tbl_ticket.lastname LIKE ?");
+    $db->query("SELECT * FROM tbl_ticket WHERE CONCAT_WS(' ',tbl_ticket.firstname,tbl_ticket.lastname) LIKE ?");
     $db->bind(1,'%'.$string.'%');
-    $db->bind(2,'%'.$string.'%');
     $db->execute();
     return $db->resultSet();
   }

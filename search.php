@@ -35,13 +35,15 @@ if (isset($_GET['searchby'])){
     case 'email':
       $tickets = $ticket->searchTickets('email',$_POST['email']);
     break;
-  } ?>
+  } 
+  ?>
 
   <div class="table-responsive">
     <table class="table table-condensed table-bordered table-striped">
       <thead>
         <tr>
           <th>Barcode</th>
+          <th>Type</th>
           <th>Name</th>
           <th>Email</th>
           <th>Date Scanned</th>
@@ -51,10 +53,12 @@ if (isset($_GET['searchby'])){
         </tr>
       </thead>
       <tbody>
+        <?php if($tickets) : ?>
         <?php foreach ($tickets as $result) :
           $result = $ticket->parseTicket($result);?>
           <tr <?php echo ($result->scanned) ? "class='success'" : ''; ?>>
             <td><?php echo $result->ticketLink;?></td>
+            <td><?php echo $result->ticket;?></td>
             <td><?php echo $result->firstname.' '.$result->lastname?></td>
             <td><?php echo $result->order_email; ?></td>
             <?php if($result->scanned) : ?>
@@ -73,6 +77,11 @@ if (isset($_GET['searchby'])){
             <?php endif; ?>
           </tr>
         <?php endforeach;?>
+        <?php else : ?>
+          <tr class="danger">
+            <td colspan="8">No results</td>
+          </tr>
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
