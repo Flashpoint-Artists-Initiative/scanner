@@ -54,14 +54,7 @@ class ticket {
     $scanner = new scanner();
     $tempcode = $barcode;
 
-    //No username specified. Aborting
-    if (!$user){
-      $scanner->logEvent("NU","Tried to scan $barcode without a username");
-      return json_encode(array('message'=>"User not specified", 'code'=>2));
-    }
-
     //Scanned barcode did not match our sanitization filters.
-    $barcode = $this->sanitizeBarcode($barcode);
     if (!$barcode) {
       $scanner->logEvent("IS","Invalid scan. Barcode: ".$tempcode);
       return json_encode(array('message'=>"Ticket ID invalid", 'code'=>0));
@@ -96,7 +89,7 @@ class ticket {
         $db->bind(1,$barcode);
         $db->execute();
       }
-      return json_encode(array('message'=>"This ticket has already been scanned", 'code'=>1, 'data'=>$this->parseTicket($result)));
+      return json_encode(array('message'=>"Ticket already used", 'code'=>1, 'data'=>$this->parseTicket($result)));
     }
 
     //Otherwise, mark the ticket as scanned, set when it was scanned and the

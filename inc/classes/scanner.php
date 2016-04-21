@@ -28,7 +28,7 @@ class scanner {
     );
     $db = new database();
     if (isset($_GET['user'])) {
-      $user = $_GET['user'];
+      $user = $user = filter_input(INPUT_GET, 'user', FILTER_SANITIZE_SPECIAL_CHARS);
     } else {
       $user = '';
     }

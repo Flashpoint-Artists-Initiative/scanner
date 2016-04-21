@@ -40,7 +40,6 @@ $('#ticket').keyup(function(e){
       });
       request.fail(function(data){
         console.log(data);
-        $('.debug').html(data.responseText);
       });
       $(this).val('');
     }

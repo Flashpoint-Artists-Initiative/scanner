@@ -2,6 +2,9 @@
 
 require_once('inc/bootstrap.php');
 
+$scanner = new scanner();
+$ticket = new ticket();
+
 $returnCodes = array(
   0 => 'Invalid Ticket ID',
   1 => 'Duplicate Scan',
@@ -11,19 +14,23 @@ $returnCodes = array(
 
 $col = TICKET_COL;
 
-if (empty($_GET['user'])){
+$user = filter_input(INPUT_GET, 'user', FILTER_SANITIZE_SPECIAL_CHARS);
+$barcode = $ticket->sanitizeBarcode(filter_input(INPUT_POST, 'ticket', FILTER_SANITIZE_SPECIAL_CHARS));
+
+if (!$user){
   $return = json_encode(array('message'=>"No username specified", 'code'=>2));
-  logEvent("NU","Tried to scan without a username");
+  $scanner->logEvent("NU","Tried to scan without a username");
   return;
 }
 
-if (isset($_POST['ticket'])){
-  $ticket = new ticket();
-  $return = $ticket->scanTicket($_POST['ticket'],$_GET['user']);
+if ($barcode){
+  $return = $ticket->scanTicket($barcode,$user);
+} else {
+  $return = json_encode(array('message'=>"Barcode cannot be empty", 'code'=>2));
 }
 
+
 if (isset($_GET['barcode']) && is_admin()){
-  $ticket = new ticket();
   $return = $ticket->scanTicket($_GET['barcode'],$_GET['user']);
 }
 
