@@ -13,7 +13,7 @@ You will need hardware to act as a server for the scanning interface and client 
 ##Assumptions
 This application makes several assumptions about the nature and structure of the data being scanned. Please see `init.sql` to get an idea of the expected structure. _You will almost certainly have to make changes to the structure of the table_.
 
-At the bare minimum, your `ticket` table should have the following columns:  
+At the bare minimum, your `tbl_ticket` table should have the following columns:  
 
 * `firstname`, ticket holder's first name
 * `barcode`, the column containing ticket barcodes that will be scanned from the physical ticket.
